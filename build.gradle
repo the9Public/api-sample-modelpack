@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'the9a.sample.modelpack.'
+group = 'the9a.sample.modelpack'
 version = '0.0.1'
 
 
