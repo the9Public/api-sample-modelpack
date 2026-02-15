@@ -1,0 +1,101 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'the9a.sample.modelpack.'
+version = '0.0.1-SNAPSHOT'
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+    withJavadocJar() // Javadoc JAR 포함
+    withSourcesJar() // 소스 JAR 포함
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main']
+        }
+    }
+}
+
+jar {
+    // 소스 디렉토리에 있는 파일들을 JAR에 포함
+    //from sourceSets.main.allSource
+    archiveBaseName = project.group
+    archiveVersion = project.version
+}
+
+repositories {
+    mavenCentral()
+	maven { url = 'https://jitpack.io' }
+//    maven {
+//        allowInsecureProtocol = true
+//        url = 'https://nexus.[Domain].co.kr/repository/maven-public/'
+//    }
+}
+
+dependencies {
+	//BOM
+	def lombokVersion = '1.18.34' // 변수바인딩은 더블쿼터이용 (")
+
+    // Use JUnit Jupiter for testing.
+    //testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter 
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation 'org.mybatis:mybatis:3.5.19'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.41'
+    
+    // Custom lib
+    // JitPack
+    implementation 'com.github.the9Public:The9UtilPack:v8.0.2'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    
+//    repositories {
+//        maven {
+//            name="repoName"
+//            allowInsecureProtocol = true
+//            if(version.toString().contains("SNAPSHOT"))
+//            {
+//                url = "https://nexus.[Domain].co.kr/repository/maven-snapshots/"
+//            }
+//            else
+//            {
+//                url = "https://nexus.[Domain].co.kr/repository/maven-releases/"
+//            }
+//            credentials {
+//                username = project.findProperty("MAVEN_CREDENTIAL_ID")
+//                password = project.findProperty("MAVEN_CREDENTIAL_PW")
+//            }
+//        } 
+//    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
